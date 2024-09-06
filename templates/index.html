@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image to Pencil Sketch</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        input[type="file"], input[type="submit"] {
+            margin: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        img {
+            margin: 20px;
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Upload an Image to Convert to Pencil Sketch</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" accept="image/*" required>
+        <input type="submit" value="Upload">
+    </form>
+
+    {% if original_image %}
+    <h2>Original Image:</h2>
+    <img src="{{ original_image }}" alt="Original Image">
+    <h2>Sketch Image:</h2>
+    <img src="{{ sketch_image }}" alt="Sketch Image">
+    {% endif %}
+</body>
+</html>
