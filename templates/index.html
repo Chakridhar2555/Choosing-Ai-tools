@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image to Pencil Sketch</title>
+    <title>Image to Pencil Sketch & AI Image Generator</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             margin: 20px;
         }
-        input[type="file"], input[type="submit"] {
+        input[type="file"], input[type="submit"], input[type="text"] {
             margin: 10px;
             padding: 10px;
             font-size: 16px;
@@ -23,11 +23,22 @@
     </style>
 </head>
 <body>
-    <h1>Upload an Image to Convert to Pencil Sketch</h1>
+    <h1>Upload an Image or Generate an AI Image</h1>
 
     <form method="POST" enctype="multipart/form-data">
-        <input type="file" name="file" accept="image/*" required>
-        <input type="submit" value="Upload">
+        <div>
+            <h2>Convert Image to Pencil Sketch</h2>
+            <input type="file" name="file" accept="image/*">
+            <input type="submit" value="Upload for Sketch">
+        </div>
+    </form>
+
+    <form method="POST">
+        <div>
+            <h2>Generate AI Image</h2>
+            <input type="text" name="prompt" placeholder="Enter image description" required>
+            <input type="submit" value="Generate AI Image">
+        </div>
     </form>
 
     {% if original_image %}
@@ -35,6 +46,11 @@
     <img src="{{ original_image }}" alt="Original Image">
     <h2>Sketch Image:</h2>
     <img src="{{ sketch_image }}" alt="Sketch Image">
+    {% endif %}
+
+    {% if ai_image %}
+    <h2>AI Generated Image:</h2>
+    <img src="{{ ai_image }}" alt="AI Image">
     {% endif %}
 </body>
 </html>
