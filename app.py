@@ -1,9 +1,9 @@
 import os
 import cv2
-# import openai  # Uncomment this when you want to use OpenAI's API
 from flask import Flask, render_template, request, redirect
 from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
+from youtube_transcript_api import YouTubeTranscriptApi
 
 # Load environment variables
 load_dotenv()
@@ -14,9 +14,6 @@ app = Flask(__name__)
 UPLOAD_FOLDER = 'static/uploads/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-
-# Uncomment and set your OpenAI API Key if using OpenAI's API
-# openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Check allowed file types
 def allowed_file(filename):
@@ -34,48 +31,55 @@ def convert_to_sketch(image_path):
     cv2.imwrite(sketch_image_path, sketch_image)
     return sketch_image_path
 
-# Temporary fix: Generate placeholder image URL instead of making API call
-def generate_ai_image_temp(prompt):
-    # Temporary placeholder image
-    return "https://via.placeholder.com/512?text=AI+Generated+Image"
+# Fetch YouTube Transcript and summarize it
+def summarize_youtube_video(video_url):
+    video_id = video_url.split('v=')[-1]  # Extract YouTube video ID from the URL
+    transcript = YouTubeTranscriptApi.get_transcript(video_id)
+    full_text = " ".join([entry['text'] for entry in transcript])
+    
+    # Placeholder for summarization (you can use OpenAI to summarize)
+    summary = full_text[:500] + '...'  # Truncate for demonstration
+    return summary
 
-# ChatGPT/OpenAI Feature: Generate AI image from text prompt (commented out for now)
-# def generate_ai_image_openai(prompt):
-#     response = openai.Image.create(
-#         prompt=prompt,
-#         n=1,
-#         size="512x512"
-#     )
-#     image_url = response['data'][0]['url']
-#     return image_url
+@app.route('/')
+def landing():
+    return render_template('landing.html')
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
+@app.route('/image-to-sketch', methods=['GET', 'POST'])
+def image_to_sketch():
     if request.method == 'POST':
         if 'file' in request.files and request.files['file'].filename != '':
-            # Handle file upload for pencil sketch
             file = request.files['file']
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(file_path)
-
-                # Convert to pencil sketch
                 sketch_image_path = convert_to_sketch(file_path)
+                return render_template('image_to_sketch.html', original_image=file_path, sketch_image=sketch_image_path)
+    return render_template('image_to_sketch.html')
 
-                return render_template('index.html', original_image=file_path, sketch_image=sketch_image_path)
 
-        elif 'prompt' in request.form and request.form['prompt'].strip() != '':
-            # Handle AI image generation from text prompt (Temporary Fix)
-            prompt = request.form['prompt']
-            ai_image_url = generate_ai_image_temp(prompt)
+@app.route('/youtube-summarizer', methods=['GET', 'POST'])
+def youtube_summarizer():
+    if request.method == 'POST':
+        if 'youtube_url' in request.form and request.form['youtube_url'].strip() != '':
+            youtube_url = request.form['youtube_url']
+            video_summary = summarize_youtube_video(youtube_url)
+            return render_template('youtube_summarizer.html', video_summary=video_summary)
+    return render_template('youtube_summarizer.html')
 
-            # Uncomment this if using OpenAI's API
-            # ai_image_url = generate_ai_image_openai(prompt)
-            
-            return render_template('index.html', ai_image=ai_image_url)
 
-    return render_template('index.html')
+@app.route('/text-to-voice', methods=['GET', 'POST'])
+def text_to_voice():
+    # Add your text-to-voice functionality here
+    return render_template('text_to_voice.html')
+
+
+@app.route('/speech-to-text', methods=['GET', 'POST'])
+def speech_to_text():
+    # Add your speech-to-text functionality here
+    return render_template('speech_to_text.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)

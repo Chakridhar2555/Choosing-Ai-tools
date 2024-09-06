@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image to Pencil Sketch & AI Image Generator</title>
-    
+    <title>Image to Pencil Sketch, AI Image Generator & YouTube Summarizer</title>
+
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
@@ -15,38 +15,27 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-image: url('https://source.unsplash.com/1600x900/?abstract,art');
-            background-size: cover;
-            background-position: center;
+            background-color: #f4f4f9;
             margin: 0;
             padding: 0;
-            background-attachment: fixed;
-            overflow-x: hidden;
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            z-index: -1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
 
         .container {
-            background-color: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-            border-radius: 16px;
+            background-color: #ffffff;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
             padding: 40px;
-            max-width: 600px;
+            max-width: 700px;
+            width: 100%;
             text-align: center;
-            z-index: 1;
-            margin: 40px auto;
         }
 
         h1 {
-            font-size: 2.2em;
+            font-size: 2em;
             margin-bottom: 20px;
             color: #333;
         }
@@ -62,15 +51,15 @@
         }
 
         input[type="file"],
-        input[type="text"] {
+        input[type="text"],
+        input[type="url"] {
             padding: 12px;
             width: 80%;
             margin: 10px 0;
             font-size: 1em;
             border: 1px solid #ddd;
-            border-radius: 8px;
+            border-radius: 6px;
             box-sizing: border-box;
-            background-color: #f9f9f9;
         }
 
         input[type="submit"] {
@@ -78,11 +67,10 @@
             background-color: #007bff;
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 1.1em;
+            font-size: 1em;
             margin: 10px 0;
-            transition: background-color 0.3s ease;
         }
 
         input[type="submit"]:hover {
@@ -108,20 +96,10 @@
             text-align: left;
         }
 
-        .card-icon {
-            margin-right: 10px;
-            color: #007bff;
-        }
-
         footer {
             margin-top: 40px;
-            color: #fff;
+            color: #777;
             font-size: 0.9em;
-            text-align: center;
-        }
-
-        footer p {
-            margin: 0;
         }
 
         /* Responsive adjustments */
@@ -132,7 +110,8 @@
             }
 
             input[type="file"],
-            input[type="text"] {
+            input[type="text"],
+            input[type="url"] {
                 width: 100%;
             }
         }
@@ -140,27 +119,37 @@
 </head>
 <body>
 
-    <div class="overlay"></div> <!-- Background overlay -->
-
     <div class="container">
-        <h1><i class="fas fa-pencil-alt"></i> Image to Pencil Sketch & AI Image Generator</h1>
+        <h1>Image to Pencil Sketch, AI Image Generator & YouTube Summarizer</h1>
 
+        <!-- Sketch Section -->
         <form method="POST" enctype="multipart/form-data">
             <div class="card">
-                <h2><i class="fas fa-image card-icon"></i> Convert Image to Pencil Sketch</h2>
+                <h2>Convert Image to Pencil Sketch</h2>
                 <input type="file" name="file" accept="image/*">
                 <input type="submit" value="Upload for Sketch">
             </div>
         </form>
 
+        <!-- AI Image Generation Section -->
         <form method="POST">
             <div class="card">
-                <h2><i class="fas fa-robot card-icon"></i> Generate AI Image</h2>
+                <h2>Generate AI Image</h2>
                 <input type="text" name="prompt" placeholder="Enter image description" required>
                 <input type="submit" value="Generate AI Image">
             </div>
         </form>
 
+        <!-- YouTube Summarization Section -->
+        <form method="POST">
+            <div class="card">
+                <h2>Summarize YouTube Video</h2>
+                <input type="url" name="youtube_url" placeholder="Enter YouTube video URL" required>
+                <input type="submit" value="Summarize Video">
+            </div>
+        </form>
+
+        <!-- Image and Summary Output -->
         {% if original_image %}
         <div class="image-preview">
             <h2>Original Image:</h2>
@@ -176,6 +165,13 @@
         <div class="image-preview">
             <h2>AI Generated Image:</h2>
             <img src="{{ ai_image }}" alt="AI Image">
+        </div>
+        {% endif %}
+
+        {% if video_summary %}
+        <div class="card">
+            <h2>Video Summary:</h2>
+            <p>{{ video_summary }}</p>
         </div>
         {% endif %}
     </div>
