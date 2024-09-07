@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "rebridz-release",
+  "private_key_id": "fe9be5e5bf6b4794fb146c0f1567bd8059bf8992",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCbH/bsyH0Y7bEQ\ncAhMuwy0r2PRMZsDFIHILbFlK+tK8E1Oca9RhBa8gZo6dnVcAN9ku64Qu9JyFwrC\niLqekjHjc7EiAkjGTnAsitKU2zGyulSShxPsQtCIDfBLSljWYcA1Ze4x8JHrUtaT\nFWiiw9efeZrhXiBc/EgCcHQELrMdG8DQ0FrmpJEPHID4bXvZu1H5NgHxcf/98AgI\nIGrSnjEc+7XhzINAUL0PtXLHieWUSsdpX4OsLMVEd5bK2sNdKbtIv8SiATYOHgIA\nb+yTARzrZdyFt3uFRJ0cBdwaBRqeARocPvBY1j2KgHmYQbxeBekyAczjuVfARsuN\nH19PNrc/AgMBAAECggEAGuWud30F7+Ia7wo17jQKrnOw34913NFb9X0ywqOcXziO\ndvkQWJaKKLJiLxvmGodONNW0B1PB2CV1qKhzj1YzD0i6oHZ77uKf4aFKhSQCmIZl\nbqi8RB2LseOU1EE2aSm23atoY0Fe08pfyU4PgBVsGEtKFySugOD/jWi5PRZp2TR3\nFqhBaj/xJo0+UtcGJv7drzyqyQNJ6LCLusZmnVm7keBWy9HZSlW7It9JDKN7Ml8V\nfvDCe6l5M5Yki3zlQCyLnbbP1yDgFAE4kemXqGlt0dmdsaDpJ+FIekOFCKwtD26O\nHhA0Pc4mJNGfellNCN/ah9uPlzfjesYlEuLGtcqdNQKBgQDM38mqg+M3gtr2LPXl\n2VAB6fXSrck2C1zT9rvQu7k6/Ums+7Yq5y7oYDyRmu1WIGL4q/yWtjIJugHsjVPo\nzvZTnXi/cNpVttIoV7vvYqEV2VFhwci2D5+K3R/CFx4uZrzxZrheDCsOKoGEW8TU\nuk2LL0+xetiwf/i2rbUgEvKr6wKBgQDB1fwFLpsFKxrxWlVmQ4fOk3YSXiO/+rKN\npPYjFAOirThYLBRQqXHofyl94fPCfm5fNomnSF3FGk5fa8dV5WxwpAZirKWggoV0\nDbGTsGD39YnCv7qUA8QKImxUYLR86ZvToN8LXb9h/ynVdfZnBY09LpzOyOS83QgI\nhsrND4Rw/QKBgARflpd8P0J1GaV9qjYg4HNaAjRgH1Z3AaFIuBOpnjejJop5yRa7\nXqX5P/G/w+c9w78ZNMgm1YSdouLg1XS3zkxUpTo494Ay6eOQk+N1UIj93Z3fnCA+\nzyIQvFfRVISbDtd8YN0pF1YzFBa2Ospru7IH7YSVYcDKyo1jweUQYnvHAoGAS7H9\n5iQqI52Ouvv056etjE1nyYp72YfUXJ40BMTXGpscqsoj8NALDKlEEcXARI7NGV+Z\n5/rJq6Q3QOo9AN1EOMTFPZmAYKs35HdIho1VgN+hOa1X9l92GiMRPO467aDo2n8z\nOyQUDffwZUzYuaigXGkskVBAi0Sh03qYDfZmWR0CgYAOvcsyvWytc2uUjbrMD+30\nWA4x7rawB4x9aKGPCN06uqozxT0GI71IqPwHCL0HwM5K/O0U0b7Im73eaVD4h0PV\nnWCtHfLXWahCj9lCv5KidfIbnyGWW82BsYqyO2Wuk8/G+xN1zPPbs4BbdgMM5ZhB\nOKVDioFp90c4Ijf4kb7oQQ==\n-----END PRIVATE KEY-----\n",
+  "client_email": "new-project@rebridz-release.iam.gserviceaccount.com",
+  "client_id": "109539776308334352884",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/new-project%40rebridz-release.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

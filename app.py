@@ -1,5 +1,5 @@
 import os
-import re  # Import regular expression module
+import re  
 import cv2
 import speech_recognition as sr
 from flask import Flask, render_template, request, redirect, send_file
@@ -8,9 +8,13 @@ from dotenv import load_dotenv
 from youtube_transcript_api import YouTubeTranscriptApi
 from gtts import gTTS
 from pydub import AudioSegment
+from google.cloud import vision
 
-# Load environment variables
+# Load environment variables from the .env file
 load_dotenv()
+
+# Set the path for Google Cloud credentials from the .env file
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
 
 app = Flask(__name__)
 
@@ -22,9 +26,23 @@ app.config['AUDIO_FOLDER'] = AUDIO_FOLDER
 ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 ALLOWED_AUDIO_EXTENSIONS = {'wav', 'mp3', 'flac', 'ogg'}
 
+# Initialize Google Cloud Vision API client
+vision_client = vision.ImageAnnotatorClient()
+
 # Check allowed file types for images
 def allowed_file(filename, allowed_extensions):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_extensions
+
+# Analyze image using Google Cloud Vision API
+def analyze_image(image_path):
+    with open(image_path, 'rb') as image_file:
+        content = image_file.read()
+
+    image = vision.Image(content=content)
+    response = vision_client.label_detection(image=image)
+    labels = response.label_annotations
+    descriptions = [label.description for label in labels]
+    return descriptions
 
 # Convert image to pencil sketch
 def convert_to_sketch(image_path):
@@ -40,7 +58,6 @@ def convert_to_sketch(image_path):
 
 # Fetch YouTube Transcript and summarize it
 def summarize_youtube_video(video_url):
-    # Regular expression to extract the video ID from various YouTube URL formats
     video_id_match = re.search(r"(?:v=|\/)([0-9A-Za-z_-]{11}).*", video_url)
 
     if not video_id_match:
@@ -49,13 +66,8 @@ def summarize_youtube_video(video_url):
     video_id = video_id_match.group(1)  # Extract the video ID
 
     try:
-        # Fetch transcript for the video ID
         transcript = YouTubeTranscriptApi.get_transcript(video_id)
-
-        # Combine transcript text
         full_text = " ".join([entry['text'] for entry in transcript])
-
-        # Placeholder for summarization logic
         summary = full_text[:500] + '...'  # Truncate for demonstration
         return summary
     except Exception as e:
@@ -63,12 +75,10 @@ def summarize_youtube_video(video_url):
 
 # Convert text to voice using gTTS
 def text_to_speech(text):
-    # Ensure the 'static/audio/' directory exists
     audio_folder = app.config['AUDIO_FOLDER']
     if not os.path.exists(audio_folder):
         os.makedirs(audio_folder)
     
-    # Create and save the audio file
     tts = gTTS(text)
     audio_path = os.path.join(audio_folder, 'output.mp3')
     tts.save(audio_path)
@@ -77,16 +87,15 @@ def text_to_speech(text):
 
 # Convert voice to text using SpeechRecognition
 def speech_to_text(audio_path):
-    # Convert MP3 and other formats to WAV (if necessary)
     if not audio_path.endswith('.wav'):
         sound = AudioSegment.from_file(audio_path)
         audio_path_wav = audio_path.rsplit('.', 1)[0] + ".wav"
         sound.export(audio_path_wav, format="wav")
-        audio_path = audio_path_wav  # Use the converted WAV file
+        audio_path = audio_path_wav
 
     recognizer = sr.Recognizer()
     with sr.AudioFile(audio_path) as source:
-        audio = recognizer.record(source)  # Record the audio file
+        audio = recognizer.record(source)
     try:
         text = recognizer.recognize_google(audio)
         return text
@@ -108,9 +117,39 @@ def image_to_sketch():
                 filename = secure_filename(file.filename)
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(file_path)
+
+                # Convert to pencil sketch
                 sketch_image_path = convert_to_sketch(file_path)
-                return render_template('image_to_sketch.html', original_image=file_path, sketch_image=sketch_image_path)
+
+                # Analyze the image using Google Cloud Vision API
+                descriptions = analyze_image(file_path)
+
+                return render_template('image_to_sketch.html', 
+                                       original_image=file_path, 
+                                       sketch_image=sketch_image_path, 
+                                       descriptions=descriptions)
     return render_template('image_to_sketch.html')
+
+# New route for Image to Content
+@app.route('/image-to-content', methods=['GET', 'POST'])
+def image_to_content():
+    if request.method == 'POST':
+        if 'file' in request.files and request.files['file'].filename != '':
+            file = request.files['file']
+            format_choice = request.form.get('format')  # Get the user's choice for format
+            if file and allowed_file(file.filename, ALLOWED_IMAGE_EXTENSIONS):
+                filename = secure_filename(file.filename)
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file.save(file_path)
+
+                # Analyze the image content using Google Cloud Vision API
+                descriptions = analyze_image(file_path)
+
+                return render_template('image_to_content.html', 
+                                       original_image=file_path, 
+                                       descriptions=descriptions, 
+                                       format=format_choice)
+    return render_template('image_to_content.html')
 
 @app.route('/youtube-summarizer', methods=['GET', 'POST'])
 def youtube_summarizer():

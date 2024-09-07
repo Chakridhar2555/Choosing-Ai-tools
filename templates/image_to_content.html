@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image to Content</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            max-width: 600px;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: box-shadow 0.3s ease-in-out;
+        }
+        .container:hover {
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
+        }
+        h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+        input[type="file"] {
+            padding: 12px;
+            margin: 20px 0;
+            font-size: 16px;
+            border: 2px solid #007bff;
+            border-radius: 8px;
+            cursor: pointer;
+            background-color: #f4f4f9;
+        }
+        input[type="submit"] {
+            padding: 12px 25px;
+            margin: 10px 0;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        .descriptions {
+            margin-top: 30px;
+            text-align: left;
+        }
+        .descriptions h2 {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 15px;
+            border-left: 4px solid #007bff;
+            padding-left: 10px;
+        }
+        .descriptions ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            color: #555;
+        }
+        .descriptions ul li {
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+        .descriptions ul li::marker {
+            color: #007bff;
+        }
+        .format-selection {
+            margin: 20px 0;
+            text-align: left;
+            font-size: 16px;
+        }
+        .format-selection label {
+            margin-right: 15px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Image Content Analyzer</h1>
+        <form method="POST" enctype="multipart/form-data">
+            <input type="file" name="file" accept="image/*" required>
+
+            <!-- Format selection (bullet points or paragraph) -->
+            <div class="format-selection">
+                <label>
+                    <input type="radio" name="format" value="bullets" checked>
+                    Bullet Points
+                </label>
+                <label>
+                    <input type="radio" name="format" value="paragraph">
+                    Paragraph
+                </label>
+            </div>
+
+            <input type="submit" value="Analyze Image">
+        </form>
+
+        {% if original_image %}
+        <h2>Uploaded Image</h2>
+        <img src="{{ original_image }}" alt="Uploaded Image">
+        {% endif %}
+
+        {% if descriptions and format == 'bullets' %}
+        <div class="descriptions">
+            <h2>Image Descriptions</h2>
+            <ul>
+                {% for description in descriptions %}
+                    <li>{{ description }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% elif descriptions and format == 'paragraph' %}
+        <div class="descriptions">
+            <h2>Image Description</h2>
+            <p>{{ descriptions | join(', ') }}.</p>
+        </div>
+        {% endif %}
+    </div>
+
+</body>
+</html>
