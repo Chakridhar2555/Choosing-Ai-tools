@@ -41,6 +41,23 @@ The **AI Tool Suite** is a web application that provides multiple tools to help 
    
 6. **OpenAI Integration (ChatGPT)**
    - Use the OpenAI API for text generation and summarization.
+## Demo
+
+![Alt text for Text to Voice](static/images/text_to_voice_demo.png)
+
+![Alt text for Image to Sketch](static/images/image_to_sketch_demo.png)
+
+![Alt text for YouTube Summarizer](static/images/youtube_summarizer_demo.png)
+
+![Alt text for Text to Voice](static/images/text_to_voice_demo.png)
+
+![Alt text for Speech to Text](static/images/speech_to_text_demo.png)
+
+
+![Alt text for Image to Sketch](static/images/image_to_sketch_demo.png)
+
+![Alt text for YouTube Summarizer](static/images/youtube_summarizer_demo.png)
+
 
 
 
