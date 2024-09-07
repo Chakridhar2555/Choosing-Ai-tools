@@ -43,20 +43,29 @@ The **AI Tool Suite** is a web application that provides multiple tools to help 
    - Use the OpenAI API for text generation and summarization.
 ## Demo
 
-![Alt text for Text to Voice](static/images/text_to_voice_demo.png)
+### Landing Page
 
-![Alt text for Image to Sketch](static/images/image_to_sketch_demo.png)
+![Landing Page](static/images/Landingpage.png)
 
-![Alt text for YouTube Summarizer](static/images/youtube_summarizer_demo.png)
+### Image to Pencil Sketch
 
-![Alt text for Text to Voice](static/images/text_to_voice_demo.png)
+![Image to Sketch Demo](static/images/image_to_sketch_demo.png)
 
-![Alt text for Speech to Text](static/images/speech_to_text_demo.png)
+### YouTube Summarizer
 
+![YouTube Summarizer Demo](static/images/youtube_summarizer_demo.png)
 
-![Alt text for Image to Sketch](static/images/image_to_sketch_demo.png)
+### Text to Voice
 
-![Alt text for YouTube Summarizer](static/images/youtube_summarizer_demo.png)
+![Text to Voice Demo](static/images/text_to_voice_demo.png)
+
+### Speech to Text
+
+![Speech to Text Demo](static/images/speech_to_text_demo.png)
+
+### Image Analyzer
+
+![Image Analyzer](static/images/Image_analyzer.png)
 
 
 
