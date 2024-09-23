@@ -1,14 +1,15 @@
 import os
-import re  
+import re
 import cv2
 import speech_recognition as sr
-from flask import Flask, render_template, request, redirect, send_file
+from flask import Flask, render_template, request, send_file
 from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 from youtube_transcript_api import YouTubeTranscriptApi
 from gtts import gTTS
 from pydub import AudioSegment
 from google.cloud import vision
+from moviepy.editor import VideoFileClip  # For extracting audio from video
 
 # Load environment variables from the .env file
 load_dotenv()
@@ -18,18 +19,21 @@ os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.getenv('GOOGLE_APPLICATION_CRE
 
 app = Flask(__name__)
 
-# Path to save uploaded images and audio files
+# Paths to save uploaded images, audio, and video files
 UPLOAD_FOLDER = 'static/uploads/'
 AUDIO_FOLDER = 'static/audio/'
+VIDEO_FOLDER = 'static/videos/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['AUDIO_FOLDER'] = AUDIO_FOLDER
+app.config['VIDEO_FOLDER'] = VIDEO_FOLDER
 ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 ALLOWED_AUDIO_EXTENSIONS = {'wav', 'mp3', 'flac', 'ogg'}
+ALLOWED_VIDEO_EXTENSIONS = {'mp4', 'mov', 'avi', 'mkv'}
 
 # Initialize Google Cloud Vision API client
 vision_client = vision.ImageAnnotatorClient()
 
-# Check allowed file types for images
+# Check allowed file types for images, audio, and video
 def allowed_file(filename, allowed_extensions):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_extensions
 
@@ -104,6 +108,18 @@ def speech_to_text(audio_path):
     except sr.RequestError:
         return "Error connecting to the speech recognition service."
 
+# New function to convert video to caption (extract audio from video and transcribe it)
+def video_to_caption(video_path):
+    # Extract audio from video
+    video = VideoFileClip(video_path)
+    audio_path = os.path.join(app.config['AUDIO_FOLDER'], 'extracted_audio.wav')
+    video.audio.write_audiofile(audio_path)
+    
+    # Transcribe the extracted audio
+    caption_text = speech_to_text(audio_path)
+    
+    return caption_text
+
 @app.route('/')
 def landing():
     return render_template('landing.html')
@@ -130,26 +146,30 @@ def image_to_sketch():
                                        descriptions=descriptions)
     return render_template('image_to_sketch.html')
 
-# New route for Image to Content
-@app.route('/image-to-content', methods=['GET', 'POST'])
-def image_to_content():
+# Route for converting video to captions
+@app.route('/video-to-caption', methods=['GET', 'POST'])
+def video_to_caption_route():
     if request.method == 'POST':
         if 'file' in request.files and request.files['file'].filename != '':
             file = request.files['file']
-            format_choice = request.form.get('format')  # Get the user's choice for format
-            if file and allowed_file(file.filename, ALLOWED_IMAGE_EXTENSIONS):
+            if file and allowed_file(file.filename, ALLOWED_VIDEO_EXTENSIONS):
                 filename = secure_filename(file.filename)
-                file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                file.save(file_path)
+                video_path = os.path.join(app.config['VIDEO_FOLDER'], filename)
+                file.save(video_path)
+                print(f"Video saved to: {video_path}")  # Debug output
 
-                # Analyze the image content using Google Cloud Vision API
-                descriptions = analyze_image(file_path)
+                # Convert video to captions
+                try:
+                    caption_text = video_to_caption(video_path)
+                    print("Captions generated successfully")  # Debug output
+                except Exception as e:
+                    print(f"Error generating captions: {str(e)}")
+                    caption_text = "Error generating captions."
 
-                return render_template('image_to_content.html', 
-                                       original_image=file_path, 
-                                       descriptions=descriptions, 
-                                       format=format_choice)
-    return render_template('image_to_content.html')
+                return render_template('video_to_caption.html', 
+                                       video_path=video_path, 
+                                       caption_text=caption_text)
+    return render_template('video_to_caption.html')
 
 @app.route('/youtube-summarizer', methods=['GET', 'POST'])
 def youtube_summarizer():
